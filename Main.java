@@ -8,6 +8,7 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -43,6 +44,12 @@ class Game extends JPanel
 	private int[][] _board = new int[3][3]; //Board matrix
 	private int _gameState, _isWin = 0; 
 	private boolean _playerOne = false, _prevPlayerOne = false, _playing = false, leftCorner = false;
+	
+	public int aiDifficulty = 0;
+	public int aiState = 0;
+	public int random = 0;
+	
+	public Random rand = new Random();
 	
 	Point b = null; PointerInfo p; //This is to get the mouse location
 	
@@ -159,20 +166,37 @@ class Game extends JPanel
 	
 	public void askMultiplayer(JFrame frame)
     {
-   	Object[] options =
-   		{
-   			"Single-Player",
-   			"Multi-player",
-   		};
-   	int n = JOptionPane.showOptionDialog(frame,
-   			"Do you have any friends?",
-   			"Do you wanna get rekt?",
-   			JOptionPane.YES_NO_OPTION,
-   			JOptionPane.QUESTION_MESSAGE,
-   			null, options, options[1]);
-   	 
-   	_gameState = n;
-    }
+	   	 Object[] options = { "Single-Player", "Multi-player", };
+	   	 Object[] options2 = { "Hard", "Medium", "Easy" };
+	
+	   	 int n = JOptionPane.showOptionDialog(frame,
+	   			 "Multiplayer",
+	   			 "What gamemode would you like to play?",
+	   			 JOptionPane.YES_NO_OPTION,
+	   			 JOptionPane.QUESTION_MESSAGE,
+	   			 null, options, options[1]);
+	   	 
+	   	 _gameState = n;
+	   	 
+	   	 System.out.println(n);
+	   	 
+	   	 if(_gameState == 0)
+	   	 {
+	   		 int n2 = JOptionPane.showOptionDialog(frame,
+	   				 "Difficulty",
+	   				 "Select your difficulty",
+	   				 JOptionPane.YES_NO_CANCEL_OPTION,
+	   				 JOptionPane.QUESTION_MESSAGE,
+	   				 null, options2, options2[2]);
+	   		 
+	   		 switch(n2)
+	   		 {
+	   		 case 0: aiState = 0; break;
+	   		 case 1: aiState = 1; break;
+	   		 case 2: aiState = 2; break;
+	   		 }
+	   	 } 
+     }
 	
 	void showBoard(Graphics g)
 	{		
@@ -240,26 +264,26 @@ class Game extends JPanel
 		repaint();
 		int tmp = playerWin;
 		Object[] options = { "Close game" };
-	  	JOptionPane.showOptionDialog(frame,
+	   	 JOptionPane.showOptionDialog(frame,
 			"Player " + tmp + " wins!",
 			"GAME OVER!",
-			JOptionPane.OK_OPTION,
-			JOptionPane.QUESTION_MESSAGE,
-			null, options, options[0]);
-	  	System.exit(0);
+			 JOptionPane.OK_OPTION,
+			 JOptionPane.QUESTION_MESSAGE,
+			 null, options, options[0]);
+	   	 System.exit(0);
 	}
 	
 	void tieGame(JFrame frame)
 	{
 		repaint();
 		Object[] options = { "Close game" };
-	  	JOptionPane.showOptionDialog(frame,
+	   	 JOptionPane.showOptionDialog(frame,
 			"Tie game!",
 			"GAME OVER!",
-			JOptionPane.OK_OPTION,
-			JOptionPane.QUESTION_MESSAGE,
-			null, options, options[0]);
-	  	System.exit(0);
+			 JOptionPane.OK_OPTION,
+			 JOptionPane.QUESTION_MESSAGE,
+			 null, options, options[0]);
+	   	 System.exit(0);
 	}
 	
 	void makeMove()
@@ -303,11 +327,32 @@ class Game extends JPanel
 			}
 		}
 		
+		if(aiState == 0) //If hard
+		{
+			aiDifficulty = 10000000;
+		}
+		else if(aiState == 1) //If medium
+		{
+			random = rand.nextInt(100) + 1;
+			
+			//Generates random number 1-100
+			if(random <= 80) { aiDifficulty = 10000000; } //Gives an 80% chance for the best move possible
+			else { aiDifficulty = -10000000; }
+		}
+		else if(aiState == 2) //If easy
+		{
+			random = rand.nextInt(100) + 1; //Generates random number 1-100
+			
+			//Gives an 80% chance for the best move possible
+			if(random <= 60) { aiDifficulty = 10000000; }
+			else { aiDifficulty = -10000000; }
+		}
+		
 		//Finds best move
 		int bestMove = 0;
 		if(player == 2)
 		{
-			int bestScore = -10000000;
+			int bestScore = -aiDifficulty;
 			for(int i = 0; i < moves.size(); i++) //Will go through all the moves
 			{
 				if(moves.get(i).score > bestScore) //Sees if this set of moves is the best one
@@ -319,7 +364,7 @@ class Game extends JPanel
 		}
 		else if(player == 1)
 		{
-			int bestScore = 10000000;
+			int bestScore = aiDifficulty;
 			for(int i = 0; i < moves.size(); i++)
 			{
 				if(moves.get(i).score < bestScore)
