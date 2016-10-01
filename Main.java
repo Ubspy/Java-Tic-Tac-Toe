@@ -333,18 +333,18 @@ class Game extends JPanel
 		}
 		else if(aiState == 1) //If medium
 		{
-			random = rand.nextInt(100) + 1;
+			random = rand.nextInt(100) + 1; //Generates random number 1-100
 			
-			//Generates random number 1-100
-			if(random <= 80) { aiDifficulty = 10000000; } //Gives an 80% chance for the best move possible
+			//Gives an 40% chance for the best move possible
+			if(random <= 60) { aiDifficulty = 10000000; }//Gives an 80% chance for the best move possible
 			else { aiDifficulty = -10000000; }
 		}
 		else if(aiState == 2) //If easy
 		{
 			random = rand.nextInt(100) + 1; //Generates random number 1-100
 			
-			//Gives an 80% chance for the best move possible
-			if(random <= 60) { aiDifficulty = 10000000; }
+			//Gives an 70% chance for the best move possible
+			if(random <= 30) { aiDifficulty = 10000000; }
 			else { aiDifficulty = -10000000; }
 		}
 		
