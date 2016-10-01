@@ -5,7 +5,6 @@ import java.awt.Point;
 import java.awt.PointerInfo;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -21,7 +20,7 @@ public class Main extends JFrame
 
 	public Main() throws IOException //Constructor, opens window
 	{
-		super("TicExpoToe"); //Sets window name
+		super("Tic-Tac-Toe"); //Sets window name
 		setSize(825, 825); //Sets size
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
 		setVisible(true); 
@@ -61,8 +60,8 @@ class Game extends JPanel
 		setLayout(null);
 		setDoubleBuffered(false);
 		
-		xImg = ImageIO.read(new File("x.png"));
-		oImg = ImageIO.read(new File("o.png"));
+		xImg = ImageIO.read(ImageLoader.load("x.png"));
+		oImg = ImageIO.read(ImageLoader.load("o.png"));
 		
 		for(int x = 0; x < 3; x++)
 		{	for(int y = 0; y < 3; y++)
